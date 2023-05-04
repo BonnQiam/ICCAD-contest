@@ -1,0 +1,12 @@
+; The first non-comment line of layout file is the chip boundary:
+; bottom_left_x bottom_left_y top_right_x top_right_y
+Chip_boundary_BL_x Chip_boundary_BL_y Chip_boundary_TR_x Chip_boundary_TR_y
+
+; Polygon_id is a positive integer. The polygon type will be one of the four types:
+; Drv_Pin that marks this polygon is a drive pin of the net,
+; Normal marks this polygon is a normal conductor,
+; Load_Pin indicates the polygon is a load pin, and
+; Fill indicates this is a fill polygon.
+; For a fill polygon, its net id can be set to any integer. 
+
+Polygon_id bl_pt tr_pt net_id layer_id <polygon type: Drv_Pin|Normal|Load_Pin|Fill>
