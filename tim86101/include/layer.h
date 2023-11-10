@@ -7,11 +7,14 @@
 #include <map>
 #include <vector>
 #include <stdio.h>
-#include "polygon.h"
 #include <time.h>
 #include <math.h>
 #include <stdlib.h>
+
+#include "polygon.h"
+
 using namespace std;
+
 bool compare_X( Polygon& first, Polygon& second);
 bool compare_Y( Polygon& first, Polygon& second);
 bool compare_Y_big( Polygon& first, Polygon& second);
@@ -39,7 +42,7 @@ public:
 	Layer();
 	Layer(list<string > polygonInfo);
 	list<Polygon> polygon;
-	list<poly_In_Window> window;
+//	list<poly_In_Window> window; //? 没有使用
 	void Insert_Polygon(list<string > polygonInfo);//Call Polygon construtor function,and instert the object to the map container in Layer
 	void space_divide(int,int,int,int,int,int);
 	void insert_fill(int window_size,unsigned int Bottom_Left_X,unsigned int Bottom_Left_Y,unsigned int Top_Right_X,unsigned int Top_Right_Y);

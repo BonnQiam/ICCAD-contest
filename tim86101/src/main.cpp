@@ -9,8 +9,11 @@
 #include<map>
 #include <stdio.h>
 #include <vector>
+
 using namespace std;
+
 #define Max 1000
+
 void Load_configFile(char *fileName);
 void Load_layoutFile(string layout_fileName, string rule_fileName);
 void Load_ruleFile(string fileName);
@@ -46,6 +49,7 @@ string fill_fileName;
 
 
 Chip chip;
+
 int main(int argc,char **argv) {
 //	cout<<"123";
 	Load_configFile(argv[1]);

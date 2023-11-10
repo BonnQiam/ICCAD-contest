@@ -28,7 +28,7 @@ void Layer::Insert_Polygon(list<string> polygonInfo)
 void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned int Bottom_Left_Y, unsigned int Top_Right_X, unsigned int Top_Right_Y) {
 	cout<<"insert layer "<<Layer_id<<endl;
 	unsigned long long TotalArea = 0;
-	list<int> insert_X;//we can insert
+	list<int> insert_X;//?we can insert —— 即可填充的区域
 	list<int> insert_Y;
 	int Max_X = 0;//the max tr_x
 	int Max_Y = 0;
@@ -39,8 +39,6 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 	int window_trY = Bottom_Left_Y + window_size;
 	TotalArea = 0;//initialize
 
-	polygon.sort(compare_X);
-
 //cout<<polygon.size()<<endl<<endl;
 //
 //
@@ -49,7 +47,8 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 //		cout<<it_sort->get_bl_X()<<endl;
 //		it_sort++;
 //	}
-
+	// sort X
+	polygon.sort(compare_X);//?调用了函数
 
 	list<Polygon>::iterator it_poly = polygon.begin();//find polygon
 	list<Polygon>::iterator it2_poly = ++polygon.begin();
@@ -92,10 +91,10 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 		it2_poly++;
 	}
 //	cout<<"X done\n";
+	
 	//sort y
-	
 	polygon.sort(compare_Y);	
-	
+
 	it_poly = polygon.begin();
 	it2_poly = ++polygon.begin();
 //	it3_poly = --polygon.end();
@@ -137,6 +136,7 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 		it2_poly++;
 	}
 //	cout<<"Y done \n";
+
 	//for test
 	list<int>::iterator it_X = insert_X.begin();
 	list<int>::iterator it_Y = insert_Y.begin();
@@ -177,7 +177,7 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 	}
 
 
-		//second fill
+	//second fill
 //	map<int, grid> grid_divide;
 //	map<int, map<int, grid> > grid_divide_map;
 	list<Polygon> fill_List;
@@ -188,7 +188,7 @@ void Layer::insert_fill(int window_size, unsigned int Bottom_Left_X, unsigned in
 	polygon.sort(compare_X);
 	
 	list<Polygon>::iterator it_test = polygon.begin();
-	while (window_trY <= Top_Right_Y) {
+	while (window_trY <= Top_Right_Y) {//? 遍历窗口
 		window_blX = Bottom_Left_X;
 		window_trX = window_blX + window_size;
 			cout <<"  window Y= " << window_blY << endl;

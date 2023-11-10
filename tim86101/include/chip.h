@@ -4,9 +4,11 @@
 #include <iostream>
 #include<list>
 #include<string>
+#include<map>
+
 #include"polygon.h"
 #include"layer.h"
-#include<map>
+
 using namespace std;
 
 class Chip {

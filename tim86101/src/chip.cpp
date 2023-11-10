@@ -13,7 +13,7 @@ void Chip::Insert_Layer(list<string> layerInfo)
 	list<string>::iterator it_layerinfo = layerInfo.begin();
 	int layerID = stoi(*it_layerinfo);
 	Layer newlayer(layerInfo);
-	layer.insert(pair<int, Layer>(layerID, newlayer));
+	layer.insert(pair<int, Layer>(layerID, newlayer));//? layer 为 chip 类的数据成员
 }
 
 void Chip::Insert_ploy(list<string> polyInfo)
