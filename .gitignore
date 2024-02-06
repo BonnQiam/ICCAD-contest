@@ -6,3 +6,7 @@ src/.vscode
 src/gurobi801
 *.o
 MainProgram
+
+Benchmark
+
+BonnQiam/build
