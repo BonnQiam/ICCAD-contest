@@ -10,7 +10,7 @@
 #include <boost/geometry/geometries/adapted/boost_polygon.hpp>
 #include <boost/geometry/geometries/geometries.hpp>
 
-#include "PTR.hpp"
+#include "Decomposition.hpp"
 
 typedef std::vector<GdsParser::GdsDB::GdsCell>                                                  Structure_s;
 typedef std::vector<std::pair<GdsParser::GdsRecords::EnumType, GdsParser::GdsDB::GdsObject*> >  Element_s;
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     for(int i=0; i < length; i++){
         GdsParser::GdsDB::GdsPolygon* test = ploygon_s[i];
         std::set< pair<Coordinate_type, Coordinate_type> > seenPairs;
-        for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end() -1; ++coor){// polygon is closed, so the last point is the same as the first point   
+        for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end() -1; coor++){// polygon is closed, so the last point is the same as the first point   
             pair <Coordinate_type, Coordinate_type> temp;
             temp.first = coor->x();
             temp.second = coor->y();
@@ -65,28 +65,64 @@ int main(int argc, char** argv)
 ///    GdsParser::GdsDB::GdsPolygon* test = ploygon_s[1];
 
 #if 0
-    GdsParser::GdsDB::GdsPolygon* test = ploygon_s[4];
+    GdsParser::GdsDB::GdsPolygon* test = ploygon_s[100];
     // show coordinate of test
-    for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); ++coor){
+    for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); coor++){
         std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;     
     }
 #endif
 
-#if 1
-    GdsParser::GdsDB::GdsPolygon* test = ploygon_s[4];
+#if 0
+    GdsParser::GdsDB::GdsPolygon* test = ploygon_s[0];
 
-    std::vector< Coor<int> > polygon;
-    std::vector< Rect<int> > result;
+    Polygon<int> poly;
 
-    for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); ++coor){
-        polygon.emplace_back(coor->x(), coor->y());
+    for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); coor++){
+//        std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;
+        poly.vertexes.push_back(Coor<int>(coor->x(), coor->y()));
     }
 
-    rectirization(polygon.cbegin(), polygon.cend(), result);
+    poly.edges_init();
 
-    std::cout << "rectangle list:\n";
-    for (const auto& rect : result) {
-        std::cout << "\t<" << rect.getBL() << " - " << rect.getTR() << ">\n";
+    std::vector< Polygon<int> > result;
+    Decomposition(poly, result);
+    
+    std::cout << "Polygon is decomposed successfully" << std::endl;
+#endif
+
+
+#if 1
+    int length = ploygon_s.size();
+
+    std::cout << "length: " << length << std::endl;
+
+    for(int i=0; i < length; i++){
+        std::cout << "Test " << i << "-th polygon" << std::endl;
+
+        GdsParser::GdsDB::GdsPolygon* test = ploygon_s[i];
+
+        Polygon<int> poly;
+
+        for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); coor++){
+            //std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;
+            poly.vertexes.push_back(Coor<int>(coor->x(), coor->y()));
+        }
+
+        poly.edges_init();
+
+        std::vector< Polygon<int> > result;
+        Decomposition(poly, result);
+
+/*
+        std::cout << "result: " << std::endl;
+        for(auto poly : result){
+            for(auto v : poly.vertexes){
+                std::cout << "(" << v.getX() << ", " << v.getY() << ")" << std::endl;
+            }
+            std::cout << std::endl;
+        }
+*/      
+        std::cout << i << "-th polygon is decomposed successfully" << std::endl;
     }
 #endif
 
