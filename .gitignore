@@ -1,12 +1,6 @@
-visualize/*
-.vscode
-bug.py
-src/.vscode
-
-src/gurobi801
-*.o
-MainProgram
-
 Benchmark
-
-BonnQiam/build
+build
+DFI
+tim86101
+wayne1204
+zhihao-lin

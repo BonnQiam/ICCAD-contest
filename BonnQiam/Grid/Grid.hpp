@@ -25,7 +25,7 @@ struct Grid
         for(auto rect = rectangles.begin(); rect != rectangles.end(); rect++){
             fillable_area += rect->Area();
         }
-        slack_density = 1.0- fillable_area / (size*size);
+        slack_density = fillable_area / (size*size);
     }
 
     void output_file(string filename){
