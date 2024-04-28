@@ -3,429 +3,284 @@
 
 #include "Coor.hpp"
 #include <vector>
+#include <iostream>
+#include <algorithm> 
 
-#define log 0
+#define HORIZONTAL 0
+#define VERTICAL 1
 
-/*******************************************************************
- * Rectangle Definition
-*/
-template <typename T>
-struct Rectangle
-{
-    Coor<T> TopLeft;
-    Coor<T> BottomRight;
-    
-    Rectangle(const Coor<T>& tl, const Coor<T>& tr) : TopLeft(tl), BottomRight(tr) {}
-    double Area() const;
-};
+#define OVERLAP_subset  0   // e2 is the subset of e1, including the case that one point of e2 is the same as one point of e1
+#define OVERLAP_full    1   // e1 and e2 are same
+#define OVERLAP_partial 2   // e1 and e2 are overlapped partially, including the case that e1 is the subset of e2
+#define OVERLAP_point   3   // e1 and e2 are overlapped at a point
+#define OVERLAP_none    4   // e1 and e2 are not overlapped
 
-template <typename T>
-double Rectangle<T>::Area() const
-{
-    double area = (BottomRight.getX() - TopLeft.getX()) * (TopLeft.getY() - BottomRight.getY());
-
-    return area;
-}
-
-// return intersection reactangle of two Rectangle
-template <typename T>
-Rectangle<T> Rectangle_intersection(const Rectangle<T>& r1, const Rectangle<T>& r2)
-{
-    // Check intersection
-    Coor<T> tl(std::max(r1.TopLeft.getX(), r2.TopLeft.getX()), std::min(r1.TopLeft.getY(), r2.TopLeft.getY()));
-    Coor<T> br(std::min(r1.BottomRight.getX(), r2.BottomRight.getX()), std::max(r1.BottomRight.getY(), r2.BottomRight.getY()));
-
-    //check if the intersection is valid
-    if(tl.getX() > br.getX() || tl.getY() < br.getY())
-        return Rectangle<T>(Coor<T>(0, 0), Coor<T>(0, 0));
-    
-    return Rectangle<T>(tl, br);
-}
-
-/************************************************************
- * Edge Definition
-*/
 template <typename T>
 struct edge
 {
     std::pair< Coor<T>, Coor<T> > Coor_pair;
     edge(const Coor<T>& a, const Coor<T>& b) : Coor_pair(a, b) {}
-/*
-    edge(const Coor<T>& a, const Coor<T>& b){
-        if(a.getX() < b.getX()){
-            Coor_pair.first = a;
-            Coor_pair.second = b;
+};
+
+template <typename T>
+void edges_sort(std::vector< edge<T> >& edges, int sort_type)
+{
+    if(sort_type == HORIZONTAL){
+        // sort the edges by the min x value of the edge.first and edge.second
+        std::sort(edges.begin(), edges.end(), [](const edge<T>& a, const edge<T>& b){
+            return a.Coor_pair.first.getX() < b.Coor_pair.first.getX();
+        });
+    }
+    else if(sort_type == VERTICAL){
+        // sort the edges by the min y value of the edge.first and edge.second
+        std::sort(edges.begin(), edges.end(), [](const edge<T>& a, const edge<T>& b){
+            return a.Coor_pair.first.getY() < b.Coor_pair.first.getY();
+        });
+    }
+}
+
+template <typename T>
+void sort_edge(edge<T>& e, int type)
+{
+    if(type == HORIZONTAL){
+        if(e.Coor_pair.first.getX() > e.Coor_pair.second.getX()){
+            std::swap(e.Coor_pair.first, e.Coor_pair.second);
         }
-        else if(a.getX() > b.getX()){
-            Coor_pair.first = b;
-            Coor_pair.second = a;
+    }
+    else if(type == VERTICAL){
+        if(e.Coor_pair.first.getY() > e.Coor_pair.second.getY()){
+            std::swap(e.Coor_pair.first, e.Coor_pair.second);
+        }
+    }
+}
+
+template <typename T>
+int after_overlapped(edge<T>& e1, edge<T>& e2){
+    // remove the overlapped part of e1 and e2 from e1 and e2
+
+    // if e1, e2 are horizontal edges with same y
+    if(e1.Coor_pair.first.getY() == e1.Coor_pair.second.getY() && 
+        e2.Coor_pair.first.getY() == e2.Coor_pair.second.getY() &&
+        e1.Coor_pair.first.getY() == e2.Coor_pair.first.getY()
+        ){
+        
+        // sort the e1 and e2, so that first point of e1/e2 is the leftmost point
+        sort_edge(e1, HORIZONTAL);
+        sort_edge(e2, HORIZONTAL);
+
+        if(e1.Coor_pair.second.getX() < e2.Coor_pair.first.getX() || 
+            e2.Coor_pair.second.getX() < e1.Coor_pair.first.getX()){
+            return OVERLAP_none;
+        }
+        else if (
+            e1.Coor_pair.second.getX() == e2.Coor_pair.first.getX() ||
+            e2.Coor_pair.second.getX() == e1.Coor_pair.first.getX()
+        ){
+            return OVERLAP_point;
         }
         else{
-            if(a.getY() < b.getY()){
-                Coor_pair.first = a;
-                Coor_pair.second = b;
+            // if e1 and e2 overlap, remove the overlapped part
+            
+            int flag;
+            //check if e1 and e2 are same
+            if(e1.Coor_pair.first == e2.Coor_pair.first && e1.Coor_pair.second == e2.Coor_pair.second){
+                flag = OVERLAP_full;
+            }
+            //check if e2 is the subset of e1
+            else if(e2.Coor_pair.first.getX() >= e1.Coor_pair.first.getX() && e2.Coor_pair.second.getX() <= e1.Coor_pair.second.getX()){
+                flag = OVERLAP_subset;
             }
             else{
-                Coor_pair.first = b;
-                Coor_pair.second = a;
+                flag = OVERLAP_partial;
             }
+            
+            Coor<T> tmp = e1.Coor_pair.second;
+            e1.Coor_pair.second = e2.Coor_pair.first;
+            e2.Coor_pair.first = tmp;
+            
+            sort_edge(e1, HORIZONTAL);
+            sort_edge(e2, HORIZONTAL);
+
+            return flag;
         }
     }
-*/
-};
-/************************************************************
- * Polygon Definition
-*/
-template <typename T>
-struct Polygon
-{   
-    // vertexes set of the polygon
-    std::vector<Coor<T>> vertexes;
-    // edges set of the polygon
-    std::vector<edge<T>> edges;
+    // if e1, e2 are vertical edges with sanme X
+    else if(e1.Coor_pair.first.getX() == e1.Coor_pair.second.getX() && 
+        e2.Coor_pair.first.getX() == e2.Coor_pair.second.getX()
+        && e1.Coor_pair.first.getX() == e2.Coor_pair.first.getX()){
+        // sort the e1 and e2, so that first point of e1/e2 is the bottommost point
+        sort_edge(e1, VERTICAL);
+        sort_edge(e2, VERTICAL);
 
-    void edges_init(); // according to vertexes, initialize edges
-    void vertexes_init(); // according to edges, initialize vertexes
-    bool isInside(Coor<T> point); // check if the point is inside the polygon based on the Winding Number Algorithm
-
-};
-
-template <typename T>
-void Polygon<T>::edges_init()
-{
-    edges.clear();
-    auto vertex = vertexes.begin();
-    for(; vertex != (vertexes.end()-1); vertex++){
-        edges.push_back(edge<T>(*vertex, *(vertex+1)));
-    } 
-}
-
-template <typename T>
-void Polygon<T>::vertexes_init()
-{
-    vertexes.clear();
-    auto edge = edges.begin();
-    for(; edge != edges.end(); edge++){
-        vertexes.push_back(edge->Coor_pair.first);
-    }
-    vertexes.push_back(edges.back().Coor_pair.second);
-}
-
-// Calculate the area of a triangle formed by three points
-template <typename T>
-double triangleArea(const Coor<T>& p1, const Coor<T>& p2, const Coor<T>& p3) {
-    // calculate the area of a triangle
-    return 0.5 * (p1.getX() * p2.getY() + p2.getX() * p3.getY() + p3.getX() * p1.getY() - p1.getX() * p3.getY() - p2.getX() * p1.getY() - p3.getX() * p2.getY());
-}
-
-template <typename T>
-bool Polygon<T>::isInside(Coor<T> point)
-{
-    int windingNumber = 0;
-
-    for(int i=0; i<vertexes.size()-1; i++){
-        if(vertexes[i].getY() <= point.getY()){
-            if(vertexes[(i+1) % vertexes.size()].getY() > point.getY()){
-                if(isLeft(vertexes[i], vertexes[(i+1) % vertexes.size()], point) > 0)
-                    windingNumber++;
-            }
+        if(e1.Coor_pair.second.getY() < e2.Coor_pair.first.getY() || 
+            e2.Coor_pair.second.getY() < e1.Coor_pair.first.getY()){
+            return OVERLAP_none;
+        }
+        else if (
+            e1.Coor_pair.second.getY() == e2.Coor_pair.first.getY() ||
+            e2.Coor_pair.second.getY() == e1.Coor_pair.first.getY()
+        ){
+            return OVERLAP_point;
         }
         else{
-            if(vertexes[(i+1) % vertexes.size()].getY() <= point.getY()){
-                if(isLeft(vertexes[i], vertexes[(i+1) % vertexes.size()], point) < 0)
-                    windingNumber--;
+            // if e1 and e2 overlap, remove the overlapped part
+            
+            int flag;
+            //check if e1 and e2 are same
+            if(e1.Coor_pair.first == e2.Coor_pair.first && e1.Coor_pair.second == e2.Coor_pair.second){
+                flag = OVERLAP_full;
             }
-        }
+            //check if e2 is the subset of e1
+            else if(e2.Coor_pair.first.getY() >= e1.Coor_pair.first.getY() && e2.Coor_pair.second.getY() <= e1.Coor_pair.second.getY()){
+                flag = OVERLAP_subset;
+            }
+            else{
+                flag = OVERLAP_partial;
+            }
+            
+            Coor<T> tmp = e1.Coor_pair.second;
+            e1.Coor_pair.second = e2.Coor_pair.first;
+            e2.Coor_pair.first = tmp;
+            
+            sort_edge(e1, VERTICAL);
+            sort_edge(e2, VERTICAL);
 
-        double area = triangleArea(vertexes[i], vertexes[(i+1) % vertexes.size()], point);
-        if(area == 0){
-            return true;
+            return flag;
         }
     }
-
-    return windingNumber != 0;
+    else{
+        return OVERLAP_none;
+    }
 }
 
-
-/**************************************************************************************
- * remove the redundancy point in the polygon
-*/
 template <typename T>
-void Polygon_shrink_redundancy_point(const Polygon<T> &polygon,  Polygon<T> &polygon_shrink)
+void edge_list_edge_complement(std::vector< edge<T> >& edge_list, 
+                    edge<T> e2, int sort_type)
 {
-    auto e = polygon.edges.begin();
-    auto v = polygon_shrink.vertexes.begin() + 1;
-
-    while(e != polygon.edges.end()){
-        auto e_nxt = ( (e+1) == polygon.edges.end() ) ? polygon.edges.begin() : (e+1);
-
-        bool find_duplicate = false;
-
-        T e_X     = e->Coor_pair.second.getX() - e->Coor_pair.first.getX();
-        T e_nxt_X = e_nxt->Coor_pair.second.getX() - e_nxt->Coor_pair.first.getX();
-
-        T e_Y     = e->Coor_pair.second.getY() - e->Coor_pair.first.getY();
-        T e_nxt_Y = e_nxt->Coor_pair.second.getY() - e_nxt->Coor_pair.first.getY();
-
-        if(
-            (e->Coor_pair.second.getY() == e->Coor_pair.first.getY() ) &&
-            (e_nxt->Coor_pair.second.getY() == e_nxt->Coor_pair.first.getY() )
-        ){
-            if(e_X*e_nxt_X > 0)
-                find_duplicate = true;
+    edges_sort<T>(edge_list, sort_type);
+    // If the e2 overlap with some edges of edge_list, the overlapped parts of these edges should be removed, and the remaining parts (not exist in the edge_list) of e2 should be added into the edge_list.
+    std::vector< edge<T> > add_edges;
+    for(auto iter = edge_list.begin(); iter != edge_list.end();)
+    {
+        // calculate the overlapped part of e2 and *iter
+        edge<T> e1 = *iter;
+        // check if e1 is a point
+        if(e1.Coor_pair.first == e1.Coor_pair.second){
+            iter = edge_list.erase(iter);
+            continue;
         }
-        else if ( (e->Coor_pair.second.getX() == e->Coor_pair.first.getX() ) &&
-            (e_nxt->Coor_pair.second.getX() == e_nxt->Coor_pair.first.getX() )
-        ){
-            if(e_Y*e_nxt_Y > 0)
-                find_duplicate = true;
+#if 0
+        std::cout << "--------------------------------" << std::endl;
+        std::cout << "e1 is " << e1.Coor_pair.first << " " << e1.Coor_pair.second << std::endl;
+        std::cout << "e2 is " << e2.Coor_pair.first << " " << e2.Coor_pair.second << std::endl;
+#endif
+        int flag = after_overlapped(e1, e2);
+
+//        std::cout << "flag: " << flag << std::endl;
+
+        if(flag == OVERLAP_subset){
+            if(e1.Coor_pair.first == e1.Coor_pair.second){
+                //if iter is a point, then remove iter and add e2 into the edge_list
+                iter = edge_list.erase(iter);
+                add_edges.push_back(e2);
+            }
+            else if(e2.Coor_pair.first == e2.Coor_pair.second){
+                //if e2 is a point, then no need to add e2 into the edge_list, just update the *iter
+                *iter = e1;
+            }
+            else{
+                *iter = e1;
+                add_edges.push_back(e2);
+            }
+            break;
         }
-        
-        if(find_duplicate){
-            if( (e+1) == polygon.edges.end() ){
-                *(polygon_shrink.vertexes.end()-1) = *(polygon_shrink.vertexes.begin()+1);
-                polygon_shrink.vertexes.erase(polygon_shrink.vertexes.begin());
+        else if(flag == OVERLAP_full){
+            // remove the overlapped edge
+            iter = edge_list.erase(iter);
+            break;
+        }
+        else if(flag == OVERLAP_partial){
+            //check if e1 is point
+            if(e1.Coor_pair.first != e1.Coor_pair.second){
+                *iter = e1;
+                
+                if(std::next(iter) == edge_list.end()){
+                    if(e2.Coor_pair.first != e2.Coor_pair.second){
+                        // add the e2 into the edge_list
+                        add_edges.push_back(e2);
+                    }
+                    break;
+                }
+            }
+            else{
+                iter = edge_list.erase(iter);
+
+                if(iter == edge_list.end()){
+                    if(e2.Coor_pair.first != e2.Coor_pair.second){
+                        // add the e2 into the edge_list
+                        add_edges.push_back(e2);
+                    }
+                    break;
+                }
+
+                continue;
+            }
+        }
+        else if(flag == OVERLAP_point){
+            e2.Coor_pair.first.setX(std::min(e1.Coor_pair.first.getX(), e2.Coor_pair.first.getX()));
+            e2.Coor_pair.first.setY(std::min(e1.Coor_pair.first.getY(), e2.Coor_pair.first.getY()));
+            e2.Coor_pair.second.setX(std::max(e1.Coor_pair.second.getX(), e2.Coor_pair.second.getX()));
+            e2.Coor_pair.second.setY(std::max(e1.Coor_pair.second.getY(), e2.Coor_pair.second.getY()));
+
+//            std::cout << "In this case, e2 is " << e2.Coor_pair.first << " " << e2.Coor_pair.second << std::endl;
+
+            if(std::next(iter) == edge_list.end()){
+                iter = edge_list.erase(iter);
+                // add the e2 into the edge_list
+                add_edges.push_back(e2);
                 break;
             }
             else{
-                e = e+1;
-                v = polygon_shrink.vertexes.erase(v);
+                iter = edge_list.erase(iter);
+                continue;
             }
         }
-        else{
-            e = e+1;
-            v = v+1;
+        else if(flag == OVERLAP_none){
+            if(std::next(iter) == edge_list.end()){
+                // add the e2 into the edge_list
+                add_edges.push_back(e2);
+                break;
+            }
         }
+        iter++;
     }
 
-    polygon_shrink.edges_init();
+    // add the add_edges into the edge_list
+    edge_list.insert(edge_list.end(), add_edges.begin(), add_edges.end());
 }
 
-/****************************************************************************************
- * remove the redundancy edge in the polygon
-*/
 template <typename T>
-bool Polygon_shrink_redundancy_edge(const Polygon<T> &polygon,  Polygon<T> &polygon_shrink)
+struct Polygon_edge_collection
 {
-    int original_size = polygon_shrink.vertexes.size();
+    std::vector< edge<T> > edges;
+    std::vector< Coor<T> > vertices;
 
-    auto e = polygon.edges.begin();
-    auto v = polygon_shrink.vertexes.begin() + 1;
-
-    while( e != polygon.edges.end()){
-        auto e_nxt = ( (e+1) == polygon.edges.end() ) ? polygon.edges.begin() : (e+1);
-
-        bool find_duplicate = false;
-
-        T e_X     = e->Coor_pair.second.getX() - e->Coor_pair.first.getX();
-        T e_nxt_X = e_nxt->Coor_pair.second.getX() - e_nxt->Coor_pair.first.getX();
-
-        T e_Y     = e->Coor_pair.second.getY() - e->Coor_pair.first.getY();
-        T e_nxt_Y = e_nxt->Coor_pair.second.getY() - e_nxt->Coor_pair.first.getY();
-
-        int e_X_sign = (e_X > 0) ? 1 : -1;
-        int e_Y_sign = (e_Y > 0) ? 1 : -1;
-        int e_nxt_X_sign = (e_nxt_X > 0) ? 1 : -1;
-        int e_nxt_Y_sign = (e_nxt_Y > 0) ? 1 : -1;
-
-        if(
-            (e->Coor_pair.second.getY() == e->Coor_pair.first.getY() ) &&
-            (e_nxt->Coor_pair.second.getY() == e_nxt->Coor_pair.first.getY() )
-        ){
-            if(e_X_sign != e_nxt_X_sign)
-                find_duplicate = true;
-        }
-        else if ( (e->Coor_pair.second.getX() == e->Coor_pair.first.getX() ) &&
-            (e_nxt->Coor_pair.second.getX() == e_nxt->Coor_pair.first.getX() )
-        ){
-            if(e_Y_sign != e_nxt_Y_sign)
-                find_duplicate = true;
-        }
-
-        if(find_duplicate){
-            T v_NewX  = e_nxt->Coor_pair.second.getX();
-            T v_NewY  = e_nxt->Coor_pair.second.getY();
-
-            if( (v_NewX == e->Coor_pair.first.getX()) && (v_NewY == e->Coor_pair.first.getY()) ){
-                if( (e+1) == polygon.edges.end() ){
-                    polygon_shrink.vertexes.erase(v);
-                    polygon_shrink.vertexes.erase(polygon_shrink.vertexes.begin());
-                    break;
-                }
-                else{
-                    v = polygon_shrink.vertexes.erase(v);
-                    v = polygon_shrink.vertexes.erase(v);
-                    e = e+2;
-                }
-            }
-            else{
-                if( (e+1) == polygon.edges.end() ){
-                    *(polygon_shrink.vertexes.end()-1) = *(polygon_shrink.vertexes.begin()+1);
-                    polygon_shrink.vertexes.erase(polygon_shrink.vertexes.begin());
-                    break;
-                }
-                else{
-                    v = polygon_shrink.vertexes.erase(v)+1;
-                    e = e+2;
-                }
-            }
-        }
-        else{
-            e = e+1;
-            v = v+1;
-        }
-
-    }
-
-    
-    int shrink_size = polygon_shrink.vertexes.size();
-    if(original_size == shrink_size)
-        return false;
-    else
-        polygon_shrink.edges_init();
-        return true;
-}
-
-/***************************************************************************************
- * Edge complement operation
-*/
+    void edges_sort(int sort_type);
+    void edges_2_vertices();
+};
 
 template <typename T>
-void Edge_list_complement(
-    const Polygon<T> &polygon,
-    const Polygon<T> &rectangle, // Pk -> Pl -> Upr -> Upl -> Pk
-    Polygon<T> &polygon_complement)
+void Polygon_edge_collection<T>::edges_2_vertices()
 {
-    Coor<T> Pk  = rectangle.vertexes[0];
-    Coor<T> Pl  = rectangle.vertexes[1];
-    Coor<T> Upr = rectangle.vertexes[2];
-    Coor<T> Upl = rectangle.vertexes[3];
-
-//    std::cout << "Pk is " << Pk << std::endl;
-//    std::cout << "Pl is " << Pl << std::endl;
-//    std::cout << "Upr is " << Upr << std::endl;
-//    std::cout << "Upl is " << Upl << std::endl;
-
-    /***********************************************************************************
-     * complement edges step 1: remove Pk-Pl and collect all other edges in polygon and rectangle
-     */
-    Polygon<T> polygon_tmp = polygon;
-    polygon_tmp.vertexes = polygon.vertexes;
-    polygon_tmp.edges = polygon.edges;
-
-//    Polygon_shrink_redundancy_point(polygon, polygon_tmp);
-
-//    std::cout << "Polygon_tmp is " << std::endl;
-//    for(auto v : polygon_tmp.vertexes){
-//        std::cout << "(" << v.getX() << ", " << v.getY() << ")" << std::endl;
-//    }
-
-    // find Pk -> Pl edges in polygon
-    auto itr_kl = polygon_tmp.edges.begin();
-    auto itr_v  = polygon_tmp.vertexes.begin();
-
-    for(; itr_kl != polygon_tmp.edges.end(); itr_kl++){
-        itr_v = itr_v + 1;
-
-        if(itr_kl->Coor_pair.first.getY() == itr_kl->Coor_pair.second.getY()){
-            if(itr_kl->Coor_pair.first == Pk){
-                if(itr_kl->Coor_pair.second == Pl)
-                    break;
-                else {
-                    polygon_tmp.vertexes.insert(itr_v, Pl);
-                    polygon_tmp.edges_init();
-                    break;
-                }
-            }
-            else if(itr_kl->Coor_pair.first == Pl){
-                if(itr_kl->Coor_pair.second == Pk)
-                    break;
-                else {
-                    polygon_tmp.vertexes.insert(itr_v, Pk);
-                    polygon_tmp.edges_init();
-                    break;
-                }
-            }
-        }
-        else{
-            continue;
-        }
-        
-        if( (itr_kl+1) == polygon_tmp.edges.end()){
-            std::cout << "Error: Pk -> Pl edge not found in polygon" << std::endl;
-            return;
-        }
+    vertices.clear();
+    for(auto& e : edges)
+    {
+        vertices.push_back(e.Coor_pair.first);
+        vertices.push_back(e.Coor_pair.second);
     }
 
-    // remove Pk-Pl and collect all other edges in polygon and rectangle
-    for(auto e = polygon_tmp.edges.begin(); e != polygon_tmp.edges.end(); e++){
-        if( (e->Coor_pair.first == Pk) && (e->Coor_pair.second == Pl) ){
-            polygon_complement.edges.push_back(edge<T>(Pk, Upl));
-            polygon_complement.edges.push_back(edge<T>(Upl, Upr));
-            polygon_complement.edges.push_back(edge<T>(Upr, Pl));
-        }
-        else if((e->Coor_pair.first == Pl) && (e->Coor_pair.second == Pk)){
-            polygon_complement.edges.push_back(edge<T>(Pl, Upr));
-            polygon_complement.edges.push_back(edge<T>(Upr, Upl));
-            polygon_complement.edges.push_back(edge<T>(Upl, Pk));
-        }
-        else
-            polygon_complement.edges.push_back(*e);
-    }
-    polygon_complement.vertexes_init();
-
-#if log
-    std::cout << "Before shrink, polygon_complement is " << std::endl;
-    for(auto v : polygon_complement.vertexes){
-        std::cout << "(" << v.getX() << ", " << v.getY() << ")" << std::endl;
-    }
-#endif
-   /**********************************************************************************
-     * complement edges step 2: remove redundancy_edge
-    */ 
-    
-    Polygon<int> poly_shrink;
-    poly_shrink.vertexes = polygon_complement.vertexes;
-
-    bool redundancy = true;
-
-    while(redundancy){
-        redundancy = Polygon_shrink_redundancy_edge(polygon_complement, poly_shrink);
-
-        if(poly_shrink.vertexes.size() == 1){
-            break;
-        }
-
-        if(redundancy){
-            polygon_complement.vertexes = poly_shrink.vertexes;
-            polygon_complement.edges = poly_shrink.edges;
-        }
-    }
-
-#if log
-    std::cout << "After shrink, polygon_complement is " << std::endl;
-    for(auto v : poly_shrink.vertexes){
-        std::cout << "(" << v.getX() << ", " << v.getY() << ")" << std::endl;
-    }
-#endif
-    // Copy poly_shrink to polygon_complement
-    polygon_complement.vertexes = poly_shrink.vertexes;
-    polygon_complement.edges = poly_shrink.edges;
-
-    /**********************************************************************************
-     * complement edges step 3: remove redundancy_edge
-    */ 
-    if(polygon_complement.vertexes.size() == 1){
-        return;
-    }
-    poly_shrink.vertexes = polygon_complement.vertexes;
-    poly_shrink.edges = polygon_complement.edges;
-
-    Polygon_shrink_redundancy_point(polygon_complement, poly_shrink);
-    
-    polygon_complement.vertexes = poly_shrink.vertexes;
-    polygon_complement.edges = poly_shrink.edges;
-
+    // remove the duplicate vertices
+    vertices.erase(std::unique(vertices.begin(), vertices.end()), vertices.end());
 }
 
 #endif

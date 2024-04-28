@@ -72,14 +72,14 @@ int main(int argc, char** argv)
     }
 #endif
 
-#if 0
+#if 1
     // Test the single polygon decomposition
     GdsParser::GdsDB::GdsPolygon* test = ploygon_s[0];
 
     Polygon<int> poly;
 
     for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); coor++){
-//        std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;
+        std::cout << coor->x() << "," << coor->y() << std::endl;
         poly.vertexes.push_back(Coor<int>(coor->x(), coor->y()));
     }
 
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 #endif
 
 
-#if 1
+#if 0
     // Test the all polygons decomposition
     int length = ploygon_s.size();
 

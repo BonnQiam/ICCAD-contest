@@ -1,7 +1,7 @@
 #ifndef Grid_hpp
 #define Grid_hpp
 
-#include "Polygon.hpp"
+#include "Rectangle.hpp"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -15,15 +15,17 @@ template <typename T>
 struct Grid
 {
     Coor<T> BasePoint;
-    double density;
+    double slack_density;
     double size;
 
-    std::vector< Rectangle<T> > Rectangles;
+    std::vector< Rect<T> > rectangles;
 
-    void calculate_density(){
-        for(auto rect = Rectangles.begin(); rect != Rectangles.end(); rect++){
-            density += rect->Area()/(size*size);
+    void calculate_slack_density(){
+        double fillable_area = 0;
+        for(auto rect = rectangles.begin(); rect != rectangles.end(); rect++){
+            fillable_area += rect->Area();
         }
+        slack_density = 1.0- fillable_area / (size*size);
     }
 
     void output_file(string filename){
@@ -32,9 +34,9 @@ struct Grid
         file.open(filename, std::ios::app);
 
         file << "<grid>" << std::endl;
-        file << density << std::endl;
-        for(auto rect = Rectangles.begin(); rect != Rectangles.end(); rect++){
-            file << rect->TopLeft << "," << rect->BottomRight << std::endl;
+        file << slack_density << std::endl;
+        for(auto rect = rectangles.begin(); rect != rectangles.end(); rect++){
+            file << rect->getTL() << "," << rect->getBR() << std::endl;
         }
         file << "</grid>" << std::endl;
 

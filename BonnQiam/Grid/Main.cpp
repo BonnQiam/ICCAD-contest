@@ -51,7 +51,7 @@ int main(int argc, char** argv)
      * 
      * *******************************/
 
-    std::vector < Rectangle<int> > rectangles;
+    std::vector < Rect<int> > rectangles;
 
     // read from rectangle.txt
     //std::ifstream file("rectangle_test.txt");
@@ -70,7 +70,10 @@ int main(int argc, char** argv)
             Coor<int> Bottomright(std::stoi((*rit)[1]), std::stoi((*rit)[2]));
             ++rit;
 
-            Rectangle<int> rect(Topleft, Bottomright);
+            Coor<int> Bottomleft(Topleft.getX(), Bottomright.getY());
+            Coor<int> Topright(Bottomright.getX(), Topleft.getY());
+            Rect<int> rect(Bottomleft, Topright);
+
             rectangles.push_back(rect);
         }
     }
@@ -91,27 +94,26 @@ int main(int argc, char** argv)
             Grid<int> grid;
             grid.BasePoint = BasePoint;
             grid.size = grid_size;
-            grid.Rectangles.clear();
+            grid.rectangles.clear();
             grids.push_back(grid);
         }
     }
     for(auto grid = grids.begin(); grid != grids.end(); grid++){
     //for(auto grid = grids.begin(); grid != grids.begin()+2; grid++){
-        Coor<int> grid_Top_left = grid->BasePoint + Coor<int>(0, grid_size);
-        Coor<int> grid_Bottom_right = grid->BasePoint + Coor<int>(grid_size, 0);
-        Rectangle<int> grid_rect(grid_Top_left, grid_Bottom_right);
+        Coor<int> grid_Top_right = grid->BasePoint + Coor<int>(grid_size, grid_size);
+        Rect<int> grid_rect(grid->BasePoint, grid_Top_right);
 
         for(auto rect = rectangles.begin(); rect != rectangles.end(); rect++){
-            Rectangle<int> grid_intersection = Rectangle_intersection(grid_rect, *rect);
+            Rect<int> grid_intersection = Rectangle_intersection(grid_rect, *rect);
             // check the grid_intersection is not Rectangle<T>(Coor<T>(0, 0), Coor<T>(0, 0))
-            if(grid_intersection.TopLeft != grid_intersection.BottomRight){
-                grid->Rectangles.push_back(grid_intersection);
+            if(grid_intersection.getTL() != grid_intersection.getBR()){
+                grid->rectangles.push_back(grid_intersection);
             }
         }
 
-        grid->calculate_density();
+        grid->calculate_slack_density();
         grid->output_file(grid_file);
-        std::cout << "The grid at " << grid->BasePoint << " has " << grid->Rectangles.size() << " rectangles" << std::endl;
+        std::cout << "The grid at " << grid->BasePoint << " has " << grid->rectangles.size() << " rectangles" << std::endl;
     }
 #endif
 
@@ -181,26 +183,23 @@ void GDSII_Decomposition(char* gdsii_file){
 
         GdsParser::GdsDB::GdsPolygon* test = ploygon_s[i];
 
-        Polygon<int> poly;
+        std::vector< Coor<int> > polygon;
+        std::vector< Rect<int> > result;
 
-        for(Coordinate_s::const_iterator coor = test->begin(); coor != test->end(); coor++){
-            poly.vertexes.push_back(Coor<int>(coor->x(), coor->y()));
+        for(Coordinate_s::const_iterator coor = test->begin(); coor != std::prev(test->end()); coor++){
+            polygon.push_back(Coor<int>(coor->x(), coor->y()));
         }
 
-        poly.edges_init();
+        Edge_based_decomposition(polygon.begin(), polygon.end(), result);
 
-        std::vector< Polygon<int> > result;
-        Decomposition(poly, result);
         std::cout << i << "-th polygon is decomposed successfully" << std::endl;
 
         //std::vector < Rectangle<int> > rectangle_result;
         std::ofstream file("rectangle.txt", std::ios::app);
-        for(auto poly: result){
-            Coor<int> Topleft = poly.vertexes[3];
-            Coor<int> Bottomright = poly.vertexes[1];
-
+        // clear the file
+        for(auto rect: result){
             // output Topleft and Bottomright to file
-            file << Topleft << "," << Bottomright << std::endl;
+            file << rect.getTL() << "," << rect.getBR() << std::endl;
         }
         file.close();
     }
