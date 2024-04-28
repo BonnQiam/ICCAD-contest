@@ -1,0 +1,322 @@
+x: 0, y: 0, val1: 0.202137, val2: 0.0567937
+x: 0, y: 20, val1: 0.234071, val2: 0.0479868
+x: 0, y: 40, val1: 0.244363, val2: 0.0456216
+x: 0, y: 60, val1: 0.239859, val2: 0.0459213
+x: 0, y: 80, val1: 0.239264, val2: 0.0467467
+x: 0, y: 100, val1: 0.250474, val2: 0.0463585
+x: 0, y: 120, val1: 0.237003, val2: 0.0457565
+x: 0, y: 140, val1: 0.23281, val2: 0.0446913
+x: 0, y: 160, val1: 0.220332, val2: 0.0444726
+x: 0, y: 180, val1: 0.225139, val2: 0.0436046
+x: 0, y: 200, val1: 0.22454, val2: 0.0467673
+x: 0, y: 220, val1: 0.226203, val2: 0.0473938
+x: 0, y: 240, val1: 0.224117, val2: 0.0467321
+x: 0, y: 260, val1: 0.226467, val2: 0.0453372
+x: 0, y: 280, val1: 0.21455, val2: 0.0432736
+x: 0, y: 300, val1: 0.234381, val2: 0.0438415
+x: 0, y: 320, val1: 0.224841, val2: 0.0468903
+x: 0, y: 340, val1: 0.214371, val2: 0.047427
+x: 0, y: 360, val1: 0.225714, val2: 0.0473264
+x: 0, y: 380, val1: 0.225166, val2: 0.0545833
+x: 20, y: 0, val1: 0.224179, val2: 0.0540905
+x: 20, y: 20, val1: 0.254015, val2: 0.0473537
+x: 20, y: 40, val1: 0.284451, val2: 0.0456195
+x: 20, y: 60, val1: 0.257538, val2: 0.0448909
+x: 20, y: 80, val1: 0.284313, val2: 0.047166
+x: 20, y: 100, val1: 0.2593, val2: 0.0451401
+x: 20, y: 120, val1: 0.252357, val2: 0.0446393
+x: 20, y: 140, val1: 0.26602, val2: 0.0450553
+x: 20, y: 160, val1: 0.243688, val2: 0.04317
+x: 20, y: 180, val1: 0.256015, val2: 0.0442286
+x: 20, y: 200, val1: 0.244088, val2: 0.0494266
+x: 20, y: 220, val1: 0.238355, val2: 0.0461072
+x: 20, y: 240, val1: 0.244947, val2: 0.0438609
+x: 20, y: 260, val1: 0.242844, val2: 0.0445767
+x: 20, y: 280, val1: 0.25272, val2: 0.0440701
+x: 20, y: 300, val1: 0.237482, val2: 0.0443257
+x: 20, y: 320, val1: 0.250839, val2: 0.0437347
+x: 20, y: 340, val1: 0.252636, val2: 0.0438891
+x: 20, y: 360, val1: 0.250292, val2: 0.0442886
+x: 20, y: 380, val1: 0.243973, val2: 0.0502243
+x: 40, y: 0, val1: 0.233475, val2: 0.0509342
+x: 40, y: 20, val1: 0.261704, val2: 0.0478508
+x: 40, y: 40, val1: 0.274811, val2: 0.0460454
+x: 40, y: 60, val1: 0.267188, val2: 0.0466381
+x: 40, y: 80, val1: 0.262137, val2: 0.0458851
+x: 40, y: 100, val1: 0.242003, val2: 0.0446357
+x: 40, y: 120, val1: 0.264924, val2: 0.0445751
+x: 40, y: 140, val1: 0.25514, val2: 0.0444659
+x: 40, y: 160, val1: 0.242348, val2: 0.0448794
+x: 40, y: 180, val1: 0.262326, val2: 0.0462427
+x: 40, y: 200, val1: 0.245494, val2: 0.0460948
+x: 40, y: 220, val1: 0.24418, val2: 0.0455852
+x: 40, y: 240, val1: 0.244826, val2: 0.0441609
+x: 40, y: 260, val1: 0.253146, val2: 0.0429581
+x: 40, y: 280, val1: 0.245367, val2: 0.0445783
+x: 40, y: 300, val1: 0.260379, val2: 0.0458444
+x: 40, y: 320, val1: 0.249612, val2: 0.0467508
+x: 40, y: 340, val1: 0.24503, val2: 0.0442882
+x: 40, y: 360, val1: 0.244268, val2: 0.0432228
+x: 40, y: 380, val1: 0.244027, val2: 0.0438679
+x: 60, y: 0, val1: 0.224979, val2: 0.0507811
+x: 60, y: 20, val1: 0.258718, val2: 0.0451415
+x: 60, y: 40, val1: 0.251245, val2: 0.0449899
+x: 60, y: 60, val1: 0.262245, val2: 0.0450574
+x: 60, y: 80, val1: 0.263808, val2: 0.0458361
+x: 60, y: 100, val1: 0.232859, val2: 0.0433387
+x: 60, y: 120, val1: 0.239252, val2: 0.0434736
+x: 60, y: 140, val1: 0.247382, val2: 0.0462186
+x: 60, y: 160, val1: 0.235089, val2: 0.044127
+x: 60, y: 180, val1: 0.23858, val2: 0.0445578
+x: 60, y: 200, val1: 0.232033, val2: 0.0436549
+x: 60, y: 220, val1: 0.247085, val2: 0.0439354
+x: 60, y: 240, val1: 0.246635, val2: 0.0445805
+x: 60, y: 260, val1: 0.269602, val2: 0.0461719
+x: 60, y: 280, val1: 0.242624, val2: 0.0447782
+x: 60, y: 300, val1: 0.263986, val2: 0.0454988
+x: 60, y: 320, val1: 0.24312, val2: 0.0467198
+x: 60, y: 340, val1: 0.254337, val2: 0.0460127
+x: 60, y: 360, val1: 0.252162, val2: 0.0466325
+x: 60, y: 380, val1: 0.245562, val2: 0.0470337
+x: 80, y: 0, val1: 0.235912, val2: 0.0473991
+x: 80, y: 20, val1: 0.266468, val2: 0.045182
+x: 80, y: 40, val1: 0.250303, val2: 0.044193
+x: 80, y: 60, val1: 0.271874, val2: 0.0458073
+x: 80, y: 80, val1: 0.271436, val2: 0.0468009
+x: 80, y: 100, val1: 0.255437, val2: 0.0448674
+x: 80, y: 120, val1: 0.249741, val2: 0.044017
+x: 80, y: 140, val1: 0.253749, val2: 0.0443677
+x: 80, y: 160, val1: 0.258155, val2: 0.0469953
+x: 80, y: 180, val1: 0.24744, val2: 0.0448219
+x: 80, y: 200, val1: 0.229557, val2: 0.0433411
+x: 80, y: 220, val1: 0.241879, val2: 0.0460326
+x: 80, y: 240, val1: 0.257588, val2: 0.0453454
+x: 80, y: 260, val1: 0.25815, val2: 0.0457177
+x: 80, y: 280, val1: 0.248305, val2: 0.0448511
+x: 80, y: 300, val1: 0.258252, val2: 0.0455754
+x: 80, y: 320, val1: 0.255585, val2: 0.0471052
+x: 80, y: 340, val1: 0.245174, val2: 0.0433184
+x: 80, y: 360, val1: 0.238644, val2: 0.0442413
+x: 80, y: 380, val1: 0.255774, val2: 0.0454384
+x: 100, y: 0, val1: 0.226752, val2: 0.0461608
+x: 100, y: 20, val1: 0.249145, val2: 0.0441013
+x: 100, y: 40, val1: 0.254964, val2: 0.0447665
+x: 100, y: 60, val1: 0.270965, val2: 0.0438554
+x: 100, y: 80, val1: 0.257427, val2: 0.0450973
+x: 100, y: 100, val1: 0.258657, val2: 0.0467271
+x: 100, y: 120, val1: 0.270382, val2: 0.0466149
+x: 100, y: 140, val1: 0.237627, val2: 0.0463116
+x: 100, y: 160, val1: 0.258655, val2: 0.0461798
+x: 100, y: 180, val1: 0.244865, val2: 0.0454546
+x: 100, y: 200, val1: 0.241161, val2: 0.0454337
+x: 100, y: 220, val1: 0.260586, val2: 0.0458665
+x: 100, y: 240, val1: 0.267305, val2: 0.0458606
+x: 100, y: 260, val1: 0.24696, val2: 0.0457474
+x: 100, y: 280, val1: 0.251747, val2: 0.0451086
+x: 100, y: 300, val1: 0.255379, val2: 0.0460888
+x: 100, y: 320, val1: 0.266494, val2: 0.0461749
+x: 100, y: 340, val1: 0.246364, val2: 0.0439078
+x: 100, y: 360, val1: 0.236827, val2: 0.0421722
+x: 100, y: 380, val1: 0.252784, val2: 0.0436369
+x: 120, y: 0, val1: 0.227475, val2: 0.0453486
+x: 120, y: 20, val1: 0.246706, val2: 0.0440338
+x: 120, y: 40, val1: 0.251588, val2: 0.0432541
+x: 120, y: 60, val1: 0.25019, val2: 0.0441828
+x: 120, y: 80, val1: 0.238797, val2: 0.0442866
+x: 120, y: 100, val1: 0.249812, val2: 0.0457587
+x: 120, y: 120, val1: 0.262033, val2: 0.0471312
+x: 120, y: 140, val1: 0.250695, val2: 0.0467778
+x: 120, y: 160, val1: 0.251313, val2: 0.046675
+x: 120, y: 180, val1: 0.253779, val2: 0.0460081
+x: 120, y: 200, val1: 0.252317, val2: 0.0448977
+x: 120, y: 220, val1: 0.244997, val2: 0.0429723
+x: 120, y: 240, val1: 0.249436, val2: 0.0450936
+x: 120, y: 260, val1: 0.243874, val2: 0.0441772
+x: 120, y: 280, val1: 0.255491, val2: 0.0446085
+x: 120, y: 300, val1: 0.254482, val2: 0.045358
+x: 120, y: 320, val1: 0.250344, val2: 0.0441933
+x: 120, y: 340, val1: 0.245044, val2: 0.0429683
+x: 120, y: 360, val1: 0.250754, val2: 0.0455756
+x: 120, y: 380, val1: 0.244679, val2: 0.0459362
+x: 140, y: 0, val1: 0.222697, val2: 0.0464137
+x: 140, y: 20, val1: 0.250573, val2: 0.0442847
+x: 140, y: 40, val1: 0.248124, val2: 0.0451631
+x: 140, y: 60, val1: 0.265229, val2: 0.0447612
+x: 140, y: 80, val1: 0.24986, val2: 0.0460681
+x: 140, y: 100, val1: 0.238298, val2: 0.0486952
+x: 140, y: 120, val1: 0.257381, val2: 0.049419
+x: 140, y: 140, val1: 0.239459, val2: 0.0535917
+x: 140, y: 160, val1: 0.235758, val2: 0.049067
+x: 140, y: 180, val1: 0.238266, val2: 0.0448075
+x: 140, y: 200, val1: 0.246471, val2: 0.0440576
+x: 140, y: 220, val1: 0.252902, val2: 0.0465735
+x: 140, y: 240, val1: 0.243449, val2: 0.0456174
+x: 140, y: 260, val1: 0.239449, val2: 0.045408
+x: 140, y: 280, val1: 0.259156, val2: 0.0485451
+x: 140, y: 300, val1: 0.261271, val2: 0.0457394
+x: 140, y: 320, val1: 0.246959, val2: 0.0423653
+x: 140, y: 340, val1: 0.263756, val2: 0.0449244
+x: 140, y: 360, val1: 0.24817, val2: 0.0446632
+x: 140, y: 380, val1: 0.252889, val2: 0.0447455
+The fillable density is 0.473422
+The fillable density is 0.568533
+The fillable density is 0.597982
+The fillable density is 0.585831
+The fillable density is 0.584388
+The fillable density is 0.611973
+The fillable density is 0.579696
+The fillable density is 0.565699
+The fillable density is 0.54174
+The fillable density is 0.555981
+The fillable density is 0.551039
+The fillable density is 0.551423
+The fillable density is 0.54982
+The fillable density is 0.560771
+The fillable density is 0.530604
+The fillable density is 0.579714
+The fillable density is 0.550086
+The fillable density is 0.496263
+The fillable density is 0.549688
+The fillable density is 0.502561
+The fillable density is 0.530246
+The fillable density is 0.619972
+The fillable density is 0.699114
+The fillable density is 0.630185
+The fillable density is 0.692249
+The fillable density is 0.635166
+The fillable density is 0.61623
+The fillable density is 0.648585
+The fillable density is 0.601514
+The fillable density is 0.634656
+The fillable density is 0.586927
+The fillable density is 0.58283
+The fillable density is 0.606711
+The fillable density is 0.600277
+The fillable density is 0.622983
+The fillable density is 0.586565
+The fillable density is 0.621128
+The fillable density is 0.623832
+The fillable density is 0.615306
+The fillable density is 0.585866
+The fillable density is 0.561105
+The fillable density is 0.634522
+The fillable density is 0.67143
+The fillable density is 0.650226
+The fillable density is 0.639373
+The fillable density is 0.591789
+The fillable density is 0.650574
+The fillable density is 0.62118
+The fillable density is 0.596185
+The fillable density is 0.637946
+The fillable density is 0.596025
+The fillable density is 0.593965
+The fillable density is 0.604458
+The fillable density is 0.6314
+The fillable density is 0.602596
+The fillable density is 0.636431
+The fillable density is 0.605307
+The fillable density is 0.60349
+The fillable density is 0.60763
+The fillable density is 0.602452
+The fillable density is 0.535807
+The fillable density is 0.634927
+The fillable density is 0.614713
+The fillable density is 0.642493
+The fillable density is 0.644089
+The fillable density is 0.572352
+The fillable density is 0.590477
+The fillable density is 0.597695
+The fillable density is 0.578679
+The fillable density is 0.582287
+The fillable density is 0.566751
+The fillable density is 0.608861
+The fillable density is 0.605737
+The fillable density is 0.659667
+The fillable density is 0.592745
+The fillable density is 0.646176
+The fillable density is 0.589219
+The fillable density is 0.624144
+The fillable density is 0.612168
+The fillable density is 0.597439
+The fillable density is 0.571669
+The fillable density is 0.651864
+The fillable density is 0.615436
+The fillable density is 0.662258
+The fillable density is 0.660395
+The fillable density is 0.62817
+The fillable density is 0.61601
+The fillable density is 0.621269
+The fillable density is 0.625896
+The fillable density is 0.607668
+The fillable density is 0.561023
+The fillable density is 0.58486
+The fillable density is 0.632351
+The fillable density is 0.633353
+The fillable density is 0.609578
+The fillable density is 0.631414
+The fillable density is 0.620924
+The fillable density is 0.602165
+The fillable density is 0.570843
+The fillable density is 0.628984
+The fillable density is 0.555894
+The fillable density is 0.612423
+The fillable density is 0.625418
+The fillable density is 0.669713
+The fillable density is 0.632485
+The fillable density is 0.629057
+The fillable density is 0.660619
+The fillable density is 0.578617
+The fillable density is 0.630105
+The fillable density is 0.594467
+The fillable density is 0.588433
+The fillable density is 0.636268
+The fillable density is 0.651731
+The fillable density is 0.602805
+The fillable density is 0.616627
+The fillable density is 0.619566
+The fillable density is 0.647669
+The fillable density is 0.611048
+The fillable density is 0.589154
+The fillable density is 0.627752
+The fillable density is 0.557936
+The fillable density is 0.603399
+The fillable density is 0.611453
+The fillable density is 0.616151
+The fillable density is 0.586149
+The fillable density is 0.612892
+The fillable density is 0.641825
+The fillable density is 0.610206
+The fillable density is 0.611003
+The fillable density is 0.617639
+The fillable density is 0.620503
+The fillable density is 0.606246
+The fillable density is 0.607544
+The fillable density is 0.60106
+The fillable density is 0.629235
+The fillable density is 0.619956
+The fillable density is 0.61594
+The fillable density is 0.60966
+The fillable density is 0.610371
+The fillable density is 0.597855
+The fillable density is 0.540468
+The fillable density is 0.618562
+The fillable density is 0.607259
+The fillable density is 0.648242
+The fillable density is 0.609452
+The fillable density is 0.578552
+The fillable density is 0.61673
+The fillable density is 0.564924
+The fillable density is 0.565308
+The fillable density is 0.588018
+The fillable density is 0.60666
+The fillable density is 0.617529
+The fillable density is 0.594897
+The fillable density is 0.586936
+The fillable density is 0.622635
+The fillable density is 0.642666
+The fillable density is 0.611072
+The fillable density is 0.647517
+The fillable density is 0.610735
+The fillable density is 0.62374
+The size of the data is 160
+The size of the grid is 160
