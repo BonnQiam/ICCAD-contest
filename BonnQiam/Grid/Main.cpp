@@ -23,11 +23,15 @@ typedef std::vector<std::pair<GdsParser::GdsRecords::EnumType, GdsParser::GdsDB:
 
 typedef GdsParser::GdsDB::GdsShape::coordinate_type                                             Coordinate_type;
 typedef std::vector< boost::polygon::point_data<GdsParser::GdsDB::GdsShape::coordinate_type> >  Coordinate_s;
-typedef std::vector<GdsParser::GdsDB::GdsPolygon*>                                              Ploygons_s;
+
+typedef GdsParser::GdsDB::GdsPolygon                                                    Polygon;
+
+struct layer{
+    int layer;
+    std::vector<Polygon> polygon_s;
+};
 
 //contest configure: the window size is 20 microns, the gdsii unit si 1 nm, i.e., 0.001 micron
-#define x_grid_num 8
-#define y_grid_num 20
 #define grid_size  20000
 
 void GDSII_Decomposition(char* gdsii_file);
@@ -55,7 +59,11 @@ int main(int argc, char** argv)
 
     // read from rectangle.txt
     //std::ifstream file("rectangle_test.txt");
-    std::ifstream file("rectangle.txt");
+    char* filename = argv[1]; 
+    int x_grid_num = std::stoi(argv[2]);
+    int y_grid_num = std::stoi(argv[3]);
+
+    std::ifstream file(filename);
 
     std::regex r("\\((\\d+), (\\d+)\\)");
     std::smatch m;
@@ -126,7 +134,7 @@ void GDSII_Decomposition(char* gdsii_file){
     //limboAssert(reader(argv[1]));
     limboAssert(reader(gdsii_file));
 
-#if 0
+#if 1
     // read the gdsii and get unit
     double unit = db.unit();
 
@@ -135,7 +143,7 @@ void GDSII_Decomposition(char* gdsii_file){
 #endif
 
 #if 1
-    Ploygons_s ploygon_s;
+    std::vector<layer> Layer_s;
     // read the gdsii and get ploygon vector
     for (Structure_s::const_iterator str = db.cells().begin(); str != db.cells().end(); ++str){
 
@@ -143,9 +151,38 @@ void GDSII_Decomposition(char* gdsii_file){
 
         for(Element_s::const_iterator ele = str->objects().begin(); ele != str->objects().end(); ++ele){
             if(ele->first == GdsParser::GdsRecords::BOUNDARY){
-                ploygon_s.push_back(dynamic_cast<GdsParser::GdsDB::GdsPolygon*>(ele->second));
+                int ele_layer = dynamic_cast<Polygon*>(ele->second)->layer();
+                
+                if(Layer_s.size() == 0){
+                    layer temp;
+                    temp.layer = ele_layer;
+                    temp.polygon_s.push_back(*dynamic_cast<Polygon*>(ele->second));
+                    Layer_s.push_back(temp);
+                }
+                else{
+                    bool flag = false;
+                    for(int i=0; i < Layer_s.size(); i++){
+                        if(Layer_s[i].layer == ele_layer){
+                            Layer_s[i].polygon_s.push_back(*dynamic_cast<Polygon*>(ele->second));
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(!flag){
+                        layer temp;
+                        temp.layer = ele_layer;
+                        temp.polygon_s.push_back(*dynamic_cast<Polygon*>(ele->second));
+                        Layer_s.push_back(temp);
+                    }
+                }
             }
         }
+    }
+
+    for(int i=0; i < Layer_s.size(); i++){
+        std::cout << "Layer: " << Layer_s[i].layer << std::endl;
+        std::cout << "Polygon size: " << Layer_s[i].polygon_s.size() << std::endl;
+        std::cout << "======================================================" << std::endl;
     }
 #endif
 
@@ -156,12 +193,27 @@ void GDSII_Decomposition(char* gdsii_file){
     Coordinate_type max_x = 0;
     Coordinate_type max_y = 0;
 
-    for(Ploygons_s::const_iterator poly = ploygon_s.begin(); poly != ploygon_s.end(); poly++){
-        for(Coordinate_s::const_iterator coor = (*poly)->begin(); coor != (*poly)->end(); coor++){
-            if(coor->x() < min_x) min_x = coor->x();
-            if(coor->y() < min_y) min_y = coor->y();
-            if(coor->x() > max_x) max_x = coor->x();
-            if(coor->y() > max_y) max_y = coor->y();
+    int length = Layer_s.size();
+
+    for(int i=0; i < length; i++){
+        int length_polygon_s = Layer_s[i].polygon_s.size();
+
+        for(int j=0; j < length_polygon_s; j++){
+            GdsParser::GdsDB::GdsPolygon test = Layer_s[i].polygon_s[j];
+            for(Coordinate_s::const_iterator coor = test.begin(); coor != test.end(); coor++){
+                if(coor->x() < min_x){
+                    min_x = coor->x();
+                }
+                if(coor->y() < min_y){
+                    min_y = coor->y();
+                }
+                if(coor->x() > max_x){
+                    max_x = coor->x();
+                }
+                if(coor->y() > max_y){
+                    max_y = coor->y();
+                }
+            }
         }
     }
 
@@ -169,39 +221,56 @@ void GDSII_Decomposition(char* gdsii_file){
     std::cout << "min_y: " << min_y << std::endl;
     std::cout << "max_x: " << max_x << std::endl;
     std::cout << "max_y: " << max_y << std::endl;
+
+    int X_grid_num = ((max_x-min_x)%grid_size == 0) ? (max_x-min_x)/grid_size : (max_x-min_x)/grid_size+1;
+    int Y_grid_num = ((max_y-min_y)%grid_size == 0) ? (max_y-min_y)/grid_size : (max_y-min_y)/grid_size+1;
+
+    std::cout << "X_grid_num: " << X_grid_num << std::endl;
+    std::cout << "Y_grid_num: " << Y_grid_num << std::endl;
     
 #endif
 
 #if 1
     // decompose the ploygon
-    int length = ploygon_s.size();
+    int length = Layer_s.size();
+    for(int i = 0; i < length; i++){
+        int length_polygon_s = Layer_s[i].polygon_s.size();
+        std::string filename = "rectangle" + std::to_string(i) + ".txt";
 
-    std::cout << "length: " << length << std::endl;
+        std::cout << "length: " << length_polygon_s << std::endl;
 
-    for(int i=0; i < length; i++){
-        std::cout << "Test " << i << "-th polygon" << std::endl;
+        for(int j=0; j < length_polygon_s; j++){
+            std::cout << "Test " << j << "-th polygon" << std::endl;
 
-        GdsParser::GdsDB::GdsPolygon* test = ploygon_s[i];
+            GdsParser::GdsDB::GdsPolygon test = Layer_s[i].polygon_s[j];
 
-        std::vector< Coor<int> > polygon;
-        std::vector< Rect<int> > result;
+            std::vector< Coor<int> > polygon;
+            std::vector< Rect<int> > result;
 
-        for(Coordinate_s::const_iterator coor = test->begin(); coor != std::prev(test->end()); coor++){
-            polygon.push_back(Coor<int>(coor->x(), coor->y()));
+            for(Coordinate_s::const_iterator coor = test.begin(); coor != std::prev(test.end()); coor++){
+                    if(coor == std::prev(test.end()) &&
+                        coor->x() == test.begin()->x() &&
+                        coor->y() == test.begin()->y()){
+                        continue;
+                    }
+                    else{
+                        polygon.push_back(Coor<int>(coor->x(), coor->y()));
+                    }
+            }
+
+            Edge_based_decomposition(polygon.begin(), polygon.end(), result);
+
+            std::cout << j << "-th polygon is decomposed successfully" << std::endl;
+
+            //std::vector < Rectangle<int> > rectangle_result;
+            std::ofstream file(filename, std::ios::app);
+            // clear the file
+            for(auto rect: result){
+                // output Topleft and Bottomright to file
+                file << rect.getTL() << "," << rect.getBR() << std::endl;
+            }
+            file.close();
         }
-
-        Edge_based_decomposition(polygon.begin(), polygon.end(), result);
-
-        std::cout << i << "-th polygon is decomposed successfully" << std::endl;
-
-        //std::vector < Rectangle<int> > rectangle_result;
-        std::ofstream file("rectangle.txt", std::ios::app);
-        // clear the file
-        for(auto rect: result){
-            // output Topleft and Bottomright to file
-            file << rect.getTL() << "," << rect.getBR() << std::endl;
-        }
-        file.close();
     }
 #endif
 }

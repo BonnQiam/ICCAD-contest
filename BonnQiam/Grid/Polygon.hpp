@@ -164,10 +164,15 @@ void edge_list_edge_complement(std::vector< edge<T> >& edge_list,
     {
         // calculate the overlapped part of e2 and *iter
         edge<T> e1 = *iter;
+        
         // check if e1 is a point
         if(e1.Coor_pair.first == e1.Coor_pair.second){
             iter = edge_list.erase(iter);
             continue;
+        }
+        // check if e2 is a point
+        if(e2.Coor_pair.first == e2.Coor_pair.second){
+            break;
         }
 #if 0
         std::cout << "--------------------------------" << std::endl;

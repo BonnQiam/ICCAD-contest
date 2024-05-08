@@ -1,6 +1,8 @@
 import re
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import sys
+import getopt
 
 def Test_1():
     """
@@ -65,7 +67,18 @@ def Test_2():
     """
     Read the file and plot the rectangles
     """
-    filename = 'grid_test.txt'
+    
+    # filename from command line: -file filename
+    filename = ''
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "f:", ["file="])
+    except getopt.GetoptError:
+        print('Grid_Test.py -f <filename>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ("-f", "--file"):
+            filename = arg
+
     rectangles = []
     
     with open(filename, 'r') as f:
