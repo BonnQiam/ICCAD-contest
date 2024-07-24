@@ -98,12 +98,13 @@ def Test_2():
 
     # plot the rectangles
     fig, ax = plt.subplots()
+    
     # adjust the range of x/y axis
     plt.xlim(0, 20000)
     plt.ylim(0, 20000)
     
     for i in range(0, len(rectangles), 2):
-        ax.add_patch(patches.Rectangle(rectangles[i], rectangles[i+1][0]-rectangles[i][0], rectangles[i+1][1]-rectangles[i][1], fill=False, edgecolor='blue'))
+        ax.add_patch(patches.Rectangle(rectangles[i], rectangles[i+1][0]-rectangles[i][0], rectangles[i+1][1]-rectangles[i][1], fill=True, edgecolor='blue'))
     plt.show()
     
 if __name__ == '__main__':
