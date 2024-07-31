@@ -24,9 +24,9 @@ with open(filename, 'r') as file:
         # get the third column
         data.append(float(split_line[2]))
         
-#data = np.array(data).reshape(8, 20) # for s
-data = np.array(data).reshape(117, 117)  # for b
-#data = np.array(data).reshape(325, 53)  # for m
+#data = np.array(data).reshape(8, 20)       # for s
+#data = np.array(data).reshape(117, 117)    # for b
+data = np.array(data).reshape(325, 53)     # for m
 
 # plot data
 plt.imshow(data, cmap='hot', interpolation='nearest')

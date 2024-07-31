@@ -96,6 +96,10 @@ double Density_score(const std::vector<Grid>& grid){
         std += (grid[i].Density_filled - mean) * (grid[i].Density_filled - mean);
     }
     std = sqrt(std / grid.size());
+
+    return std;
+
+#if 0
     double std_score = Score_function(beta_varation, std);
 
     // outlier score
@@ -123,6 +127,7 @@ double Density_score(const std::vector<Grid>& grid){
     double line_score = Score_function(beta_line, line);
 
     return alpha_varation*std_score + alpha_outlier*outlier_score + alpha_line*line_score;
+#endif
 }
 
 double Score_function(double beta, double metric){

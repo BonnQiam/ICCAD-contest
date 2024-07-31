@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 
     /**********************************
      * 
-     * Read sM1.txt and grid.txt
+     * Read sM1.txt ('Benchmark' file) and grid.txt ('Grid' file)
      * establish the grid structure
      * 
      * *******************************/
