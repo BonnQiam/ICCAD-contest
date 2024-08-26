@@ -5,6 +5,7 @@
 //? Original solve_callback.hpp is <cppad/ipopt/solve_callback.hpp>
 
 
+#if 0
 // factor 4 s
 #define alpha_std       0.2
 #define beta_std        0.077
@@ -12,6 +13,33 @@
 #define beta_line       11.758
 #define alpha_outlier   0.15
 #define beta_outlier    0.014
+#define alpha_overlay   0.2
+#define beta_overlay    79154
+#endif
+
+#if 1
+// factor 2 b
+#define alpha_std       0.2
+#define beta_std        0.517
+#define alpha_line      0.2
+#define beta_line       3578
+#define alpha_outlier   0.15
+#define beta_outlier    22.801
+#define alpha_overlay   0.2
+#define beta_overlay    6111303
+#endif
+
+#if 0
+// factor 2 m
+#define alpha_std       0.2
+#define beta_std        0.53
+#define alpha_line      0.2
+#define beta_line       6052
+#define alpha_outlier   0.15
+#define beta_outlier    27.56
+#define alpha_overlay   0.2
+#define beta_overlay    10276835
+#endif
 
 using CppAD::AD;
 
