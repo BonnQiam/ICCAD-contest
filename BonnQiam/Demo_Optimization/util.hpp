@@ -10,16 +10,7 @@
 #include <vector>
 
 //contest configure: the window size is 20 microns, the gdsii unit si 1 nm, i.e., 0.001 micron
-#define x_grid_num 8
-#define y_grid_num 20
-#define grid_size  20000
-
-#define alpha_varation  0.2
-#define beta_varation   0.077
-#define alpha_line      0.2
-#define beta_line       11.758
-#define alpha_outlier   0.15
-#define beta_outlier    0.014
+//#define grid_size  20000
 
 struct Grid_Coor {
     int x;

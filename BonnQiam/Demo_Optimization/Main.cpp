@@ -35,10 +35,10 @@ int main(int argc, char* argv[]) {
      * *******************************/
 
     std::vector<Grid_Coor>  Grid_No_Fill;
-    std::vector<double>     Density_Mental;
-    parse_No_Fill_Density(Input[0], Grid_No_Fill, Density_Mental);
-    parse_No_Fill_Density(Input[1], Grid_No_Fill, Density_Mental);
-    parse_No_Fill_Density(Input[2], Grid_No_Fill, Density_Mental);
+    std::vector<double>     Density_Metal;
+    parse_No_Fill_Density(Input[0], Grid_No_Fill, Density_Metal);
+    parse_No_Fill_Density(Input[1], Grid_No_Fill, Density_Metal);
+    parse_No_Fill_Density(Input[2], Grid_No_Fill, Density_Metal);
 
     std::vector<double> Density_Fillable;
     parse_Fillable_Density(Input[3], Density_Fillable);
@@ -66,14 +66,15 @@ int main(int argc, char* argv[]) {
 
     Dvector xl(length), xu(length);
     for(int i = 0; i < length; i++)
-	{	xl[i] = 0;
+	{	
+        xl[i] = 0;
 		xu[i] = Density_Fillable[i];
 	}
 
     Dvector gl(1), gu(1);
 	gl[0] = 0.;     gu[0] = 0.;
 
-    FG_eval fg_eval(Density_Mental);
+    FG_eval fg_eval(Density_Metal, Overlay);
 
     std::string options;
     //options += "String  sb           yes\n";
@@ -105,9 +106,9 @@ int main(int argc, char* argv[]) {
 
     double Sum1, Sum2, Sum3 = 0.0;
     for(int i=0; i < (length/3); i++){
-        Sum1 += solution.x[i] + Density_Mental[i];
-        Sum2 += solution.x[i + (length/3)] + Density_Mental[i + (length/3)];
-        Sum3 += solution.x[i + 2*(length/3)] + Density_Mental[i + 2*(length/3)];
+        Sum1 += solution.x[i] + Density_Metal[i];
+        Sum2 += solution.x[i + (length/3)] + Density_Metal[i + (length/3)];
+        Sum3 += solution.x[i + 2*(length/3)] + Density_Metal[i + 2*(length/3)];
     }
     double Mean1 = Sum1/(length/3);
     double Mean2 = Sum2/(length/3);
@@ -115,9 +116,9 @@ int main(int argc, char* argv[]) {
 
     double Std1, Std2, Std3 = 0.0;
     for(int i=0; i < (length/3); i++){
-        Std1 += (solution.x[i] + Density_Mental[i] - Mean1)*(solution.x[i] + Density_Mental[i] - Mean1);
-        Std2 += (solution.x[i + (length/3)] + Density_Mental[i + (length/3)] - Mean2)*(solution.x[i + (length/3)] + Density_Mental[i + (length/3)] - Mean2);
-        Std3 += (solution.x[i + 2*(length/3)] + Density_Mental[i + 2*(length/3)] - Mean3)*(solution.x[i + 2*(length/3)] + Density_Mental[i + 2*(length/3)] - Mean3);
+        Std1 += (solution.x[i] + Density_Metal[i] - Mean1)*(solution.x[i] + Density_Metal[i] - Mean1);
+        Std2 += (solution.x[i + (length/3)] + Density_Metal[i + (length/3)] - Mean2)*(solution.x[i + (length/3)] + Density_Metal[i + (length/3)] - Mean2);
+        Std3 += (solution.x[i + 2*(length/3)] + Density_Metal[i + 2*(length/3)] - Mean3)*(solution.x[i + 2*(length/3)] + Density_Metal[i + 2*(length/3)] - Mean3);
     }
     Std1 = sqrt(Std1/(length/3));
     Std2 = sqrt(Std2/(length/3));
@@ -128,18 +129,27 @@ int main(int argc, char* argv[]) {
     std::cout << "Std3: " << Std3 << std::endl;
     std::cout << "Cost = " << Std1 + Std2 + Std3 << std::endl;
 
+    double Overlay1, Overlay2 = 0.0;
+    for(int i=0; i < (length/3); i++){
+        Overlay1 += ((solution.x[i] + solution.x[i + (length/3)] - Overlay[i])>0)?(solution.x[i] + solution.x[i + (length/3)] - Overlay[i]):0;
+        Overlay2 += ((solution.x[i + (length/3)] + solution.x[i + 2*(length/3)] - Overlay[i+ (length/3)])>0)?(solution.x[i + (length/3)] + solution.x[i + 2*(length/3)] - Overlay[i+ (length/3)]):0;
+    }
+
+    std::cout << "Overlay: " << ((Overlay1+Overlay2)*20*20) << std::endl;
+
     // Ouput
-    std::ofstream Output_file_1("Grid_opt_Layer1.txt");
+    std::ofstream Output_file_1("Grid_opt_Layer1.txt");//overal grid density
     std::ofstream Output_file_2("Grid_opt_Layer2.txt");
     std::ofstream Output_file_3("Grid_opt_Layer3.txt");
-    for (int i = 0; i < Num_grid; i++) {
-        double tmp1 = solution.x[i] + Density_Mental[i];
-        double tmp2 = solution.x[i + Num_grid] + Density_Mental[i + Num_grid];
-        double tmp3 = solution.x[i + 2*Num_grid] + Density_Mental[i + 2*Num_grid];
 
-        Output_file_1 << Grid_No_Fill[i].x << " " << Grid_No_Fill[i].y << " " << tmp1 << std::endl;
-        Output_file_2 << Grid_No_Fill[i + Num_grid].x << " " << Grid_No_Fill[i + Num_grid].y << " " << tmp2 << std::endl;
-        Output_file_3 << Grid_No_Fill[i + 2*Num_grid].x << " " << Grid_No_Fill[i + 2*Num_grid].y << " " << tmp3 << std::endl;
+    for (int i = 0; i < Num_grid; i++) {
+        double tmp1 = solution.x[i] + Density_Metal[i];
+        double tmp2 = solution.x[i + Num_grid] + Density_Metal[i + Num_grid];
+        double tmp3 = solution.x[i + 2*Num_grid] + Density_Metal[i + 2*Num_grid];
+
+        Output_file_1 << Grid_No_Fill[i].x << " " << Grid_No_Fill[i].y << " " << tmp1 << " " << solution.x[i] << std::endl;
+        Output_file_2 << Grid_No_Fill[i + Num_grid].x << " " << Grid_No_Fill[i + Num_grid].y << " " << tmp2 << " " << solution.x[i + Num_grid] << std::endl;
+        Output_file_3 << Grid_No_Fill[i + 2*Num_grid].x << " " << Grid_No_Fill[i + 2*Num_grid].y << " " << tmp3 << " " << solution.x[i + 2*Num_grid] << std::endl;
     }
     Output_file_1.close();
     Output_file_2.close();
