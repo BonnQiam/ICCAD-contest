@@ -93,9 +93,18 @@ def WindowVisualize(index):
         # adjust the range of x/y axis        
         plt.xlim(x_min, x_max)
         plt.ylim(y_min, y_max)
+        
+        Area = 0
             
         for i in range(0, len(rectangles), 2):
             ax.add_patch(patches.Rectangle(rectangles[i], rectangles[i+1][0]-rectangles[i][0], rectangles[i+1][1]-rectangles[i][1], fill=True, edgecolor='blue'))
+            
+            Area += (rectangles[i+1][0]-rectangles[i][0]) * (rectangles[i+1][1]-rectangles[i][1])
+        
+        Density = Area / (20000*20000)
+        
+        print('The Density of the grid is: ' + str(Density))
+              
         plt.show()
     else:
 
@@ -104,4 +113,4 @@ def WindowVisualize(index):
         
         
 if __name__ == '__main__':
-    WindowVisualize(17225)
+    WindowVisualize(1)

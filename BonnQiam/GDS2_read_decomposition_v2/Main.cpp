@@ -3,6 +3,8 @@
 #include <iterator>
 #include <set>
 
+#include <time.h>
+
 #include <limbo/parsers/gdsii/gdsdb/GdsIO.h>
 #include <limbo/preprocessor/Msg.h>
 
@@ -107,16 +109,18 @@ int main(int argc, char** argv)
 
 #if 0
     // Test the single polygon decomposition
-    
-    //GdsParser::GdsDB::GdsPolygon test = Layer_s[0].polygon_s[6];
+
+    //GdsParser::GdsDB::GdsPolygon test = Layer_s[0].polygon_s[0];
     GdsParser::GdsDB::GdsPolygon test = Layer_s[2].polygon_s[300];
+    //GdsParser::GdsDB::GdsPolygon test = Layer_s[0].polygon_s[max_vertex_index];
     
 
     std::vector< Coor<int> > polygon;
     std::vector< Rect<int> > result;
 
     for(Coordinate_s::const_iterator coor = test.begin(); coor != test.end(); coor++){
-        std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;
+        //std::cout << "x: " << coor->x() << ", y: " << coor->y() << std::endl;
+        std::cout << coor->x() << "," << coor->y() << std::endl;
 
         if(coor == std::prev(test.end()) &&
             coor->x() == test.begin()->x() &&
@@ -135,6 +139,21 @@ int main(int argc, char** argv)
 
 
 #if 1
+
+    //find the polygon with the most vertex
+    for(int i=0; i < Layer_s.size(); i++){
+        int max_vertex = 0;
+        int max_vertex_index = 0;
+        int length = Layer_s[i].polygon_s.size();
+        for(int j=0; j < length; j++){
+            if(Layer_s[i].polygon_s[j].size() > max_vertex){
+                max_vertex = Layer_s[i].polygon_s[j].size();
+                max_vertex_index = j;
+            }
+        }
+        std::cout << "In " << i << " layer, the polygon with the most vertex is " << max_vertex_index << " and the vertex number is " << max_vertex << std::endl;
+    }
+
     // Test the all polygons decomposition
     for(int i=0; i < Layer_s.size(); i++){
 
@@ -147,8 +166,11 @@ int main(int argc, char** argv)
         int length = Layer_s[i].polygon_s.size();
         std::cout << "length: " << length << std::endl;
 
+        clock_t start, end;
+        start = clock();
+
         for(int j=0; j < length; j++){
-            std::cout << "Test " << j << "-th polygon" << " in " << i << " layer" << std::endl;
+            //std::cout << "Test " << j << "-th polygon" << " in " << i << " layer" << std::endl;
 
             GdsParser::GdsDB::GdsPolygon test = Layer_s[i].polygon_s[j];
 
@@ -177,8 +199,13 @@ int main(int argc, char** argv)
                 std::cout << std::endl;
             }
     */      
-            std::cout << j << "-th polygon is decomposed successfully" << std::endl;
+            //std::cout << j << "-th polygon is decomposed successfully" << std::endl;
         }
+
+        end = clock();
+
+        std::cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << " (s)" << std::endl;
+
         std::cout << "Decomposition of " << i << " Layer is completed successfully" << std::endl;
     }
 #endif

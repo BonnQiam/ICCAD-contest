@@ -157,6 +157,11 @@ template <typename T>
 void edge_list_edge_complement(std::vector< edge<T> >& edge_list, 
                     edge<T> e2, int sort_type)
 {
+    if(edge_list.size() == 0){
+        edge_list.push_back(e2);
+        return;
+    }
+
     edges_sort<T>(edge_list, sort_type);
     // If the e2 overlap with some edges of edge_list, the overlapped parts of these edges should be removed, and the remaining parts (not exist in the edge_list) of e2 should be added into the edge_list.
     std::vector< edge<T> > add_edges;
@@ -272,6 +277,20 @@ struct Polygon_edge_collection
 
     void edges_sort(int sort_type);
     void edges_2_vertices();
+    void vertices_2_edges();
+
+    //constructor
+    Polygon_edge_collection(std::vector< Coor<T> >& Polygon_vertices)
+    {
+        // move Polygon_vertices to vertices
+        vertices.assign(Polygon_vertices.begin(), Polygon_vertices.end());
+    }
+
+    Polygon_edge_collection(std::vector< edge<T> >& Polygon_edges)
+    {
+        // move Polygon_edges to edges
+        edges.assign(Polygon_edges.begin(), Polygon_edges.end());
+    }
 };
 
 template <typename T>
@@ -286,6 +305,20 @@ void Polygon_edge_collection<T>::edges_2_vertices()
 
     // remove the duplicate vertices
     vertices.erase(std::unique(vertices.begin(), vertices.end()), vertices.end());
+}
+
+template <typename T>
+void Polygon_edge_collection<T>::vertices_2_edges()
+{
+    edges.clear();
+    for(auto iter = vertices.begin(); iter != vertices.end(); iter++)
+    {
+        if(std::next(iter) == vertices.end()){
+            edges.push_back(edge<T>(*iter, vertices.front()));
+            break;
+        }
+        edges.push_back(edge<T>(*iter, *std::next(iter)));
+    }
 }
 
 #endif

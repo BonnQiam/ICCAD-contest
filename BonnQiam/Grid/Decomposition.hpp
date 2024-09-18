@@ -25,20 +25,17 @@ static auto findCoorTuple_Y(std::vector< Coor<T> >& vertices) // if not using th
                     typename std::vector< Coor<T> >::iterator>;
 
 
-template <typename T, typename const_iterator>
-void Edge_based_decomposition(const const_iterator& first, const const_iterator& last, 
-                    std::vector< Rect<T> >& result)
+template <typename T>
+void Edge_based_decomposition(Polygon_edge_collection<T>& Polygon_edges, std::vector< Rect<T> >& result)
 {
     result.clear();
-    std::vector< Coor<T> > polygon(first, last);
-    //establish the Polygon_edge_collection
-    Polygon_edge_collection<T> Polygon_edges;
-    for(auto it = polygon.begin(); it != polygon.end(); it++)
-    {
-        auto next = (std::next(it) == polygon.end()) ? polygon.begin() : std::next(it);
-        Polygon_edges.edges.push_back(edge<T>(*it, *next));
+
+    if(Polygon_edges.edges.size() == 0){
+        Polygon_edges.vertices_2_edges();
     }
-    Polygon_edges.edges_2_vertices();
+    else if(Polygon_edges.vertices.size() == 0){
+        Polygon_edges.edges_2_vertices();
+    }
 
 #if 0
     //display the edges
@@ -53,6 +50,8 @@ void Edge_based_decomposition(const const_iterator& first, const const_iterator&
     //for(int i=0; i<1; ++i)
     //for(int i=0; i<500; ++i)
     {
+        std::cout << "Edges size: " << Polygon_edges.edges.size() << std::endl;
+
         const auto& coor_tuple_X = findCoorTuple_X(Polygon_edges.vertices);
         const auto Pk_X = *(std::get<0>(coor_tuple_X));
         const auto Pl_X = *(std::get<1>(coor_tuple_X));

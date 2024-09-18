@@ -258,7 +258,8 @@ void GDSII_Decomposition(char* gdsii_file){
                     }
             }
 
-            Edge_based_decomposition(polygon.begin(), polygon.end(), result);
+            Polygon_edge_collection<int> collection(polygon);
+            Edge_based_decomposition(collection, result);
 
             std::cout << j << "-th polygon is decomposed successfully" << std::endl;
 
