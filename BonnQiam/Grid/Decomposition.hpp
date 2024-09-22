@@ -50,7 +50,7 @@ void Edge_based_decomposition(Polygon_edge_collection<T>& Polygon_edges, std::ve
     //for(int i=0; i<1; ++i)
     //for(int i=0; i<500; ++i)
     {
-        std::cout << "Edges size: " << Polygon_edges.edges.size() << std::endl;
+        //std::cout << "Edges size: " << Polygon_edges.edges.size() << std::endl;
 
         const auto& coor_tuple_X = findCoorTuple_X(Polygon_edges.vertices);
         const auto Pk_X = *(std::get<0>(coor_tuple_X));
